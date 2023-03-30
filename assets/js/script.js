@@ -60,7 +60,7 @@ var scoreForm = document.getElementById("username")
 var highScoreList = document.getElementById("high-score-display")
 
 //Timer Works
-var timerCount = 3
+var timerCount = 30
 var timerEl = document.getElementById("timer")
 var timer
 
@@ -114,7 +114,7 @@ function displayQuestion() {
 function displayScoreForm() {
     scoreForm.setAttribute("style", "display:inline-block")
     questionList.setAttribute("style", "display:none")
-    // answerDisplay.textContent("Enter Your Name")
+    //answerDisplay.textContent("Enter Your Name")
 }
 
 function getUserScore() {
@@ -179,7 +179,7 @@ function display() {
         return
     }
     if (whatToDisplay === "questions") {
-        startTimer()
+        if (questionNumber === 0) { startTimer() }
         displayQuestion()
         displayScore()
         return
