@@ -26,7 +26,7 @@ var questions = [
         answerLoc: getRandy(4)
     },
     {
-        question: "What is the name of the movie",
+        question: "What is the name of the movie with a bunch of dwarves in it",
         answer: "The Hobbit: An Unexpected Journey",
         answerLoc: getRandy(4)
     },
@@ -56,6 +56,35 @@ var questionDisplay = document.getElementById(`ans0`)
 var scoreDisplay = document.getElementById("score")
 var highScoreDisplay = document.getElementById("high-scores")
 var whatToDisplay = "menu"
+var scoreForm = document.getElementById("username")
+var highScoreList = document.getElementById("high-score-display")
+
+//Timer Works
+var timerCount = 3
+var timerEl = document.getElementById("timer")
+var timer
+
+function startTimer() {
+
+    timer = setInterval(function() {
+        timerCount--
+        timerEl.textContent = timerCount
+
+        if (timerCount >= 0) {
+            // if the quiz is over we stop the timer
+            if (questionNumber === questions.length) {
+                clearInterval(timer)
+                whatToDisplay = "submitscore"
+                display()
+            }
+        }
+        if (timerCount === 0) {
+            clearInterval(timer)
+            whatToDisplay = "submitscore"
+            display()
+        }
+    }, 1000)
+}
 
 function displayMenu() {
     answerDisplay.textContent = "Welcome to THE DWARF QUIZ!"
@@ -68,7 +97,8 @@ function displayScore() {
 
 function displayScoreBoard() {
     answerDisplay.textContent = "HIGH SCORES!!!"
-    questionDisplay.textContent = "A high score would go here!!!"
+    questionList.setAttribute("style", "display:none")
+    highScoreList.setAttribute("style", "display:inline-block")
 }
 
 function displayQuestion() {
@@ -81,6 +111,20 @@ function displayQuestion() {
     questionDisplay.innerHTML = questions[questionNumber].answer
 }
 
+function displayScoreForm() {
+    scoreForm.setAttribute("style", "display:inline-block")
+    questionList.setAttribute("style", "display:none")
+    // answerDisplay.textContent("Enter Your Name")
+}
+
+function getUserScore() {
+    var userInput = {
+        nameLocal: scoreForm.innerHTML,
+        scoreLocal:  score
+    }
+
+    localStorage.setItem("highscore", JSON.stringify(userInput))
+}
 
 questionList.addEventListener("click", function(e) {
     var clickedElement = e.target
@@ -118,6 +162,13 @@ highScoreDisplay.addEventListener("click", function(){
     }
 })
 
+scoreForm.addEventListener("submit", function(event) {
+    event.preventDefault()
+    getUserScore()
+
+
+})
+
 function display() {
     if (whatToDisplay === "menu") {
         displayMenu()
@@ -128,10 +179,14 @@ function display() {
         return
     }
     if (whatToDisplay === "questions") {
+        startTimer()
         displayQuestion()
         displayScore()
         return
-    }        
+    }
+    if(whatToDisplay === "submitscore") {
+        displayScoreForm()
+    }   
     }
 
 
