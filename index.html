@@ -7,19 +7,20 @@
     <link rel="stylesheet" href="./assets/css/style.css" />
   </head>
   <body>
+    <!-- header never goes away -->
     <header>
-    <h2 id="high-scores">Highscores</h2>
+    <h2 id="menu-transition">Highscores</h2>
     <h2 id="score">score: --</h2>
     <h2 id="timer">timer</h2>
     </header>
+
     <h1 id="theQuestion"></h1>
-    <input type="text" id="username" style="display:none" placeholder="enter your name">
-    <ul id="theAnswers">
-      <li class="question" id="ans0"> </li>
-      <li class="question" id="ans1"> </li>
-      <li class="question" id="ans2"> </li>
-      <li class="question" id="ans3"> </li>
-    </ul>
+    <button style="display: none" id="start-button">Begin Quiz</button>
+    <input type="text" id="user-input" style="display:none" placeholder="enter your name">
+    <button type="submit" style="display:none" id="save-button">submit</button>
+
+    <ul id="theAnswers"></ul>
+    <h2 id="question-alert"></h2>
     <ul style="display:none" id="high-score-display"></ul>
     <script src = "assets/js/script.js"></script>
   </body>

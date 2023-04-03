@@ -7,7 +7,7 @@ header {
     display: flex;
     justify-content: space-around;
 }
-#high-scores {
+#menu-transition {
     left: 10px;
     text-align: left;
 }
@@ -40,7 +40,7 @@ li:hover {
     background-color: rgb(142, 179, 192);
 }
 
-#high-scores:hover {
+#menu-transition:hover {
     cursor: pointer;
     color: darkblue;
 }

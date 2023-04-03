@@ -1,69 +1,62 @@
-//variables
-
-function getRandy(x) {
-    return Math.floor(Math.random()*x)
-}
-
-var questions = [
-    {
-        question: "What is the name of the Dwarf who survived the end of the world?",
-        answer: "Gotrek",
-        answerLoc: getRandy(4)
-    },
-    {
-        question: "What is the name of the dwarf who joins the fellowship of the ring",
-        answer: "Gimli",
-        answerLoc: getRandy(4)
-    },
-    {
-        question: "What is the name of the Dwarf who is supposedly destined to save the Votann?",
-        answer: "Ultrek",
-        answerLoc: getRandy(4)
-    },
-    {
-        question: "What is the name of the Dwarf born of the house Lannister?",
-        answer: "Tyrion",
-        answerLoc: getRandy(4)
-    },
-    {
-        question: "What is the name of the movie with a bunch of dwarves in it",
-        answer: "The Hobbit: An Unexpected Journey",
-        answerLoc: getRandy(4)
-    },
-    {
-        question: "What is the name of the name of Gimli's Father",
-        answer: "Gloin",
-        answerLoc: getRandy(4)
-    },
-    {
-        question: "Last Question",
-        answer: "Ruri",
-        answerLoc: getRandy(4)
-    },
-
-]
-
-var wrongAnswers = [
-    "Gormmli", "Rurpriri", "Gloninin", "Uthrekoni", "Typepperoin",
-     "The Hobbnit: An Unexpected PogChamp", "Vultok!", "DoorRingy", "Rock Jones"
-]
-
-var answerDisplay = document.getElementById("theQuestion")
-var questionNumber = 0
-var score = 0
-var questionList = document.getElementById("theAnswers")
-var questionDisplay = document.getElementById(`ans0`)
+//Declare Variables with good names
+// elements
+var questionDisplay = document.getElementById("theQuestion")
+var answerListParent = document.getElementById("theAnswers")
+var questionAlert = document.getElementById("question-alert")
+var highScoreListParent = document.getElementById("high-score-display")
 var scoreDisplay = document.getElementById("score")
-var highScoreDisplay = document.getElementById("high-scores")
-var whatToDisplay = "menu"
-var scoreForm = document.getElementById("username")
-var highScoreList = document.getElementById("high-score-display")
-
-//Timer Works
-var timerCount = 30
+var transitionLink = document.getElementById("menu-transition")
+var userInput = document.getElementById("user-input")
+var userInputButton = document.getElementById("save-button")
+var startButton = document.getElementById("start-button")
 var timerEl = document.getElementById("timer")
-var timer
+//questions
+var questionList = [
+    {
+        question: "1 + 1",
+        answer: "2",
+        potentialAnswers: ["11", "16", "2", "1"]
+    },
+    {
+        question: "2 + 2",
+        answer: "4",
+        potentialAnswers: ["22", "16", "4", "1"]
+    },
+    {
+        question: "3+3",
+        answer: "6",
+        potentialAnswers: ["6", "16", "21", "1000"]
+    },
+    {
+        question: "4+4",
+        answer: "8",
+        potentialAnswers: ["3", "16", "21", "8"]
+    },
+    {
+        question: "5+5",
+        answer: "10",
+        potentialAnswers: ["3", "10", "21", "1"]
+    },
+    {
+        question: "What can you put in a bucket to make it lighter?",
+        answer: "A Hole",
+        potentialAnswers: ["helium", "nothing", "a hole", "a screwdriver"]
+    },
+    {
+        question: "What will grow bigger the more you take away from it?",
+        answer: "A hole",
+        potentialAnswers: ["Empty space", "A hole", "wasted time", "silence"]
+    },
 
+]
+// simple variables (numbers?)
+var score
+var timer
+var timerCount
+var currentQuestion
+var scoreArray = []
+
+//timer stuff
 function startTimer() {
 
     timer = setInterval(function() {
@@ -72,122 +65,118 @@ function startTimer() {
 
         if (timerCount >= 0) {
             // if the quiz is over we stop the timer
-            if (questionNumber === questions.length) {
+            if (currentQuestion >= questionList.length-1) {
                 clearInterval(timer)
-                whatToDisplay = "submitscore"
-                display()
-            }
-        }
+        }}
         if (timerCount === 0) {
+            while(answerListParent.firstChild) {
+                answerListParent.removeChild(answerListParent.firstChild)
+            }
             clearInterval(timer)
-            whatToDisplay = "submitscore"
-            display()
+            getUserName()
         }
     }, 1000)
 }
 
+// display initial menu
+
 function displayMenu() {
-    answerDisplay.textContent = "Welcome to THE DWARF QUIZ!"
-    questionDisplay.textContent = "Click Here to START THE QUIZ!!!"
+    score = 0
+    currentQuestion = 0
+    timerCount = 100
+    questionDisplay.innerHTML = "Press the Button to Continue to the Quiz"
+    startButton.setAttribute("style", "display: inline-block")
 }
 
-function displayScore() {
-    scoreDisplay.textContent = "score: " + score
-}
-
-function displayScoreBoard() {
-    answerDisplay.textContent = "HIGH SCORES!!!"
-    questionList.setAttribute("style", "display:none")
-    highScoreList.setAttribute("style", "display:inline-block")
-}
-
+// display questions
+//      make a for loop that appends the parent to create the questions
 function displayQuestion() {
-    for(i=0; i<4; i++) {
-        questionDisplay = document.getElementById("ans" + i)
-        questionDisplay.textContent = wrongAnswers[getRandy(wrongAnswers.length)]
+    // first remove all previous children
+    while(answerListParent.firstChild) {
+        answerListParent.removeChild(answerListParent.firstChild)
     }
-    questionDisplay = document.getElementById(`ans${questions[questionNumber].answerLoc}`)
-    answerDisplay.textContent = questions[questionNumber].question
-    questionDisplay.innerHTML = questions[questionNumber].answer
-}
-
-function displayScoreForm() {
-    scoreForm.setAttribute("style", "display:inline-block")
-    questionList.setAttribute("style", "display:none")
-    //answerDisplay.textContent("Enter Your Name")
-}
-
-function getUserScore() {
-    var userInput = {
-        nameLocal: scoreForm.innerHTML,
-        scoreLocal:  score
-    }
-
-    localStorage.setItem("highscore", JSON.stringify(userInput))
-}
-
-questionList.addEventListener("click", function(e) {
-    var clickedElement = e.target
-    var clickedAnswer = clickedElement.innerHTML
-    if (whatToDisplay === "questions") {
-        if (clickedElement.matches("li")) {
-            if (questionNumber > questions.length) {
-                whatToDisplay = "highscores"
-             if (clickedAnswer == questions[questionNumber].answer){
-                   score++ 
-               }
-            }
-        questionNumber++
-        display()
-      }
-    } else if ( whatToDisplay === "menu") { 
-        whatToDisplay = "questions"
-        display()    
-}
-}
-)
-
-highScoreDisplay.addEventListener("click", function(){
-    if (whatToDisplay != "highscores") {
-        highScoreDisplay.innerHTML = "Menu"
-        whatToDisplay = "highscores"
-        display()
+    // create 4 possible choices using wrong answers?
+    if (currentQuestion>=questionList.length){
+        getUserName()
         return
     }
-    if (whatToDisplay === "highscores") {
-        highScoreDisplay.innerHTML = "Highscores"
-        whatToDisplay = "menu"
-        display()
-        return
+    questionDisplay.innerHTML = questionList[currentQuestion].question
+    for (i=0; i<4; i++) {
+        var li = document.createElement("li")
+        li.textContent = questionList[currentQuestion].potentialAnswers[i]
+        answerListParent.appendChild(li)
+    }
+}
+
+
+// display form submission screen
+function getUserName() {
+    questionDisplay.innerHTML = "Your Score was " + score + "! Please enter your name"
+    userInput.setAttribute("style", "display: inline-block")
+    userInputButton.setAttribute("style", "display: inline-block")
+}
+
+// display the high scores
+function displayHighScores() {
+    userInput.setAttribute("style", "display: none")
+    userInputButton.setAttribute("style", "display: none")
+    highScoreListParent.setAttribute("style", "display: inline-block")
+    var highScores = JSON.parse(localStorage.getItem("high-scores"))
+    highScoreListParent.innerHTML = highScores
+}
+
+//Event listener for questions
+answerListParent.addEventListener("click", function(e) {
+    if(e.target.matches("li")) {
+    if(currentQuestion<questionList.length){
+        if(e.target.innerHTML == questionList[currentQuestion].answer){
+        score++
+        scoreDisplay.innerHTML = "score: " + score
+        questionAlert.innerHTML = "Correct!"
+        setTimeout(function(){
+            questionAlert.innerHTML = ""
+        }, 1000)
+        }
+        //when you get an answer wrong reduce the timer by one shrug
+        if(e.target.innerHTML !== questionList[currentQuestion].answer){
+            timerCount = timerCount - 15
+            questionAlert.innerHTML = "Sorry, Wrong Answer"
+            setTimeout(function(){
+                questionAlert.innerHTML = ""
+            }, 1000)
+
+        }
+    currentQuestion++
+    displayQuestion()
+    }
+}
+})
+//Event Listener for menu transitions between main menu and highscores, disable while timer is running?
+
+transitionLink.addEventListener("click", function() {
+    if (transitionLink.innerHTML = "Highscores") {
+        displayHighScores()
     }
 })
 
-scoreForm.addEventListener("submit", function(event) {
+//Event listener for form submission and add highscores to local storage
+
+userInputButton.addEventListener("click", function(event) {
     event.preventDefault()
-    getUserScore()
+    var userData = document.getElementById("user-input")
+    var li = document.createElement("li")
+    li.innerHTML = JSON.stringify(userData)
+    scoreArray.push.score
+    localStorage.setItem("high-scores", JSON.stringify(score))
 
-
+    displayHighScores()
 })
 
-function display() {
-    if (whatToDisplay === "menu") {
-        displayMenu()
-        return
-    } 
-    if (whatToDisplay === "highscores") {
-        displayScoreBoard()
-        return
-    }
-    if (whatToDisplay === "questions") {
-        if (questionNumber === 0) { startTimer() }
-        displayQuestion()
-        displayScore()
-        return
-    }
-    if(whatToDisplay === "submitscore") {
-        displayScoreForm()
-    }   
-    }
+startButton.addEventListener("click", function(event) {
+    event.preventDefault()
+    startTimer()
+    displayQuestion()
+    this.setAttribute("style", "display: none")
+})
 
-
-display()
+displayMenu()
