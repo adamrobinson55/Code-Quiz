@@ -85,7 +85,7 @@ function displayMenu() {
     score = 0
     currentQuestion = 0
     timerCount = 100
-    questionDisplay.innerHTML = "Press the Button to Continue to the Quiz"
+    questionDisplay.innerHTML = "Press the Button to Continue to the Quiz or Press HighScores to View HighScores!"
     startButton.setAttribute("style", "display: inline-block")
 }
 
