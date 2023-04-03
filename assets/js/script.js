@@ -55,6 +55,7 @@ var timer
 var timerCount
 var currentQuestion
 var scoreArray = []
+var menuBool = true
 
 //timer stuff
 function startTimer() {
@@ -118,11 +119,29 @@ function getUserName() {
 
 // display the high scores
 function displayHighScores() {
+    //hide some stuff and change some text
+    startButton.setAttribute("style", "display: none")
+    questionDisplay.innerHTML = "HIGH SCORES!"
+    //clear list before displaying everthing
+    while(highScoreListParent.firstChild) {
+        highScoreListParent.removeChild(highScoreListParent.firstChild)
+    }
+
     userInput.setAttribute("style", "display: none")
     userInputButton.setAttribute("style", "display: none")
     highScoreListParent.setAttribute("style", "display: inline-block")
+
+    // get list from local storage
     var highScores = JSON.parse(localStorage.getItem("high-scores"))
-    highScoreListParent.innerHTML = highScores
+    //display list
+    for(i=0; i<highScores.length; i++) {
+        var li = document.createElement("li")
+        li.innerHTML = "Name: " + highScores[i].name + "    Score : " + highScores[i].userScore
+        highScoreListParent.appendChild(li)
+    }
+    transitionLink.innerText = "Menu"
+    menuBool = false
+    timer = false
 }
 
 //Event listener for questions
@@ -154,20 +173,37 @@ answerListParent.addEventListener("click", function(e) {
 //Event Listener for menu transitions between main menu and highscores, disable while timer is running?
 
 transitionLink.addEventListener("click", function() {
-    if (transitionLink.innerHTML = "Highscores") {
-        displayHighScores()
+
+    if(timer) {
+        return
     }
+
+    if (menuBool) {
+        displayHighScores()
+        return
+    } 
+    if (!menuBool) {
+        //just gonna reload the page to get back to main menu, since there's a lot of things that get reset
+        location.reload()
+    }
+
+
+
 })
 
 //Event listener for form submission and add highscores to local storage
 
 userInputButton.addEventListener("click", function(event) {
     event.preventDefault()
-    var userData = document.getElementById("user-input")
-    var li = document.createElement("li")
-    li.innerHTML = JSON.stringify(userData)
-    scoreArray.push.score
-    localStorage.setItem("high-scores", JSON.stringify(score))
+    var userData = document.getElementById("user-input").value
+    var userObj = {
+        name: userData,
+        userScore: score
+    }
+    console.log(userObj.name)
+    scoreArray = JSON.parse(localStorage.getItem("high-scores"))
+    scoreArray.push(userObj)
+    localStorage.setItem("high-scores", JSON.stringify(scoreArray))
 
     displayHighScores()
 })
